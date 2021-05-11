@@ -11,6 +11,9 @@ const DBManager = require('./db/DBManager');
 const Logger = require('./utils/Logger');
 const configHelper = require('./utils/configHelper');
 
+const getURLData = require('./utils/urlHelper').getURLData;
+const extract = require('jpeg-extract')
+
 // YOLO process max retries
 const HTTP_REQUEST_LISTEN_TO_YOLO_RETRY_DELAY_MS = 30;
 // Max wait time for YOLO to start is 3 min = 180s
@@ -206,6 +209,17 @@ module.exports = {
     }, (error) => {
       console.log(error);
       console.log('error updateRecordingWithNewframe');
+    })
+  },
+
+  updateWithNewFrame_: function (detectionsOfThisFrame, frameId) {
+    const url = `http://localhost:${config.PORTS.darknet_mjpeg_stream}`;
+    console.log(`JLOLE ${url}`)
+    extract(url, (err, img) => {
+      if (!err)
+        fs.writeFileSync('img.jpg', img)
+      else
+        console.error(err)
     })
   },
 

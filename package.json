@@ -5,6 +5,7 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "PORT=8080 NODE_ENV=production node server.js",
+    "stop": "pkill -9 node; PORT=8080 NODE_ENV=production node server.js",
     "generateapidoc": "apidoc -i . -e node_modules/ -o apidoc/"
   },
   "dependencies": {
@@ -18,6 +19,7 @@
     "immutable": "^4.0.0-rc.12",
     "intercept-stdout": "^0.1.2",
     "ip": "^1.1.5",
+    "jpeg-extract": "^3.0.1",
     "killable": "^1.0.1",
     "lodash.clonedeep": "^4.5.0",
     "lodash.flatten": "^4.4.0",
