@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y jq wget
 
 # Start Darknet Install
-RUN git clone --depth 1 -b odc https://github.com/jlo-le/darknet /var/local/darknet
+RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/darknet /var/local/darknet
 
 WORKDIR /var/local/darknet
 
@@ -26,7 +26,7 @@ RUN mkdir opendatacam_videos && cd opendatacam_videos && wget https://github.com
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get install -y nodejs
 
-RUN git clone --depth 1 -b v3.0.1 https://github.com/jlo-le/opendatacam /var/local/opendatacam
+RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/opendatacam /var/local/opendatacam
 
 WORKDIR /var/local/opendatacam
 
