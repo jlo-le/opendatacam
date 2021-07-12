@@ -10,6 +10,7 @@ const Recording = require('./model/Recording');
 const DBManager = require('./db/DBManager');
 const Logger = require('./utils/Logger');
 const configHelper = require('./utils/configHelper');
+const { exec } = require('child_process');
 
 const getURLData = require('./utils/urlHelper').getURLData;
 const extract = require('jpeg-extract')
@@ -57,6 +58,10 @@ const initialState = {
 }
 
 let Opendatacam = cloneDeep(initialState);
+
+let max_confidence_for_coloring = {};
+let process_within_n_frames = 10; // should be less than number_of_frames_to_save from darknet (not sure what's a safe margin)
+let one_frame_per = 7;           // should be same as darknet value
 
 module.exports = {
 
@@ -192,7 +197,8 @@ module.exports = {
           h: Math.round(trackerData.h),
           bearing: Math.round(trackerData.bearing),
           confidence: Math.round(trackerData.confidence * 100),
-          name: trackerData.name
+          name: trackerData.name,
+          color: ''
         }
       })
     }
@@ -326,6 +332,14 @@ module.exports = {
     // console.log(JSON.stringify(trackerDataForThisFrame));
     // console.log('=========')
 
+    // Color stuff 
+    if (Opendatacam.recordingStatus.isRecording) {
+      if (Opendatacam.recordingStatus.filename.length > 0 && frameId < 25) {
+      } else {
+        this._colorFunc(trackerDataForThisFrame, frameId);
+      }
+    }
+
     // Increment frame number
     Opendatacam.currentFrame++;
 
@@ -364,6 +378,47 @@ module.exports = {
 
   },
 
+  _colorFunc: function (trackerDataForThisFrame, frameId) {
+    if (frameId % one_frame_per != 0) return;
+
+    trackerDataForThisFrame.map((tracker_data) => {
+      // add if not existing / update if confidence higher
+      if (!max_confidence_for_coloring.hasOwnProperty(tracker_data.id) || tracker_data.confidence > max_confidence_for_coloring[tracker_data.id].confidence) {
+        max_confidence_for_coloring[tracker_data.id] = {
+          'frame_id': frameId,
+          'confidence': tracker_data.confidence,
+          'x': tracker_data.x,
+          'y': tracker_data.y,
+          'w': tracker_data.w,
+          'h': tracker_data.h
+        }
+      }
+    });
+
+    Object.entries(max_confidence_for_coloring).forEach((entry) => {
+      const [key, value] = entry;
+
+      // Delete old tracked objects
+      if (frameId >= (value.frame_id + (process_within_n_frames * one_frame_per)) * 1.5) {
+        delete max_confidence_for_coloring.key
+        return;
+      }
+
+      if (!value.hasOwnProperty('color') && frameId >= (value.frame_id + (process_within_n_frames * one_frame_per))) {
+        exec(`python color.py -x ${value.x} -y ${value.y} -w ${value.w} -h ${value.h} -f ${value.frame_id}`, function (err, stdout, stderr) {
+          max_confidence_for_coloring[key].color = 'set'
+          if (Opendatacam.recordingStatus.recordingId)
+            DBManager.updateColor(
+              Opendatacam.recordingStatus.recordingId, value.frame_id, parseInt(key), stdout.trim()
+            ).then(() => {
+              // console.log('success');
+            }, (error) => {
+              console.log(error);
+            });
+        });
+      }
+    });
+  },
 
   runCountingLogic: function(trackerDataForThisFrame, frameId) {
 
