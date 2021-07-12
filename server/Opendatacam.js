@@ -59,8 +59,8 @@ const initialState = {
 let Opendatacam = cloneDeep(initialState);
 
 let max_confidence_for_coloring = {};
-let process_within_n_frames = 10; // should be less than number_of_frames_to_save from darknet (not sure what's a safe margin)
-let one_frame_per = 7;           // should be same as darknet value
+let process_within_n_frames = 10; // this * one_frame_per should be less than number_of_frames_to_save from darknet (not sure what's a safe margin)
+let one_frame_per = 7;            // should be same as darknet value
 
 module.exports = {
 
