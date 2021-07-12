@@ -393,7 +393,7 @@ module.exports = {
       }
 
       if (!value.hasOwnProperty('color') && frameId >= (value.frame_id + (process_within_n_frames * one_frame_per))) {
-        exec(`python color.py -x ${value.x} -y ${value.y} -w ${value.w} -h ${value.h} -f ${value.frame_id}`, function (err, stdout, stderr) {
+        exec(`python3 color.py -x ${value.x} -y ${value.y} -w ${value.w} -h ${value.h} -f ${value.frame_id}`, function (err, stdout, stderr) {
           max_confidence_for_coloring[key].color = 'set'
           if (Opendatacam.recordingStatus.recordingId)
             DBManager.updateColor(
