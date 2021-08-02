@@ -1,4 +1,4 @@
-FROM resinplayground/jetson-nano-cuda-cudnn-opencv:v0.2-slim
+FROM resinplayground/jetson-nano-cuda-cudnn-opencv:v0.2-full
 
 ENV DEBIAN_FRONTEND noninteractive
 
