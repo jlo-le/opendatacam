@@ -39,16 +39,22 @@ RUN apt-get install -y python3-pip
 
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
 
-RUN pip3 install -U pip
-RUN pip3 install -U cython numpy grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast h5py astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
+RUN pip3 install -U pip setuptools
+RUN pip3 install --use-deprecated=legacy-resolver -U cython grpcio absl-py py-cpuinfo psutil portpicker six mock requests gast astor termcolor protobuf keras-applications keras-preprocessing wrapt google-pasta
+RUN pip3 install --use-deprecated=legacy-resolver numpy==1.19.4 h5py==2.10.0
+RUN pip3 install --use-deprecated=legacy-resolver --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
+RUN pip3 install --use-deprecated=legacy-resolver imgaug==0.4.0 pycocotools scikit-image keras==2.0.8 IPython
 
-RUN pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 tensorflow==1.15.2+nv20.3
+RUN git clone https://github.com/matterport/Mask_RCNN.git
+WORKDIR /var/local/opendatacam/Mask_RCNN/samples
+RUN wget https://github.com/matterport/Mask_RCNN/releases/download/v2.0/mask_rcnn_coco.h5
+WORKDIR /var/local/opendatacam
 
 # RUN apt-get install -y python3-apt python3-dev && \
 #     apt-get install -y python3-scipy python3-pandas python3-sklearn && \
 
 #     RUN python3 -m pip install --upgrade pip && \
-#     python3 -m pip install scikit-image h5py imgaug IPython "keras>=2.0.8"
+#     python3 -m pip install scikit-image h5py imgaug  "keras>=2.0.8"
 
 # RUN apt-get install -y python3-venv python3-pip && \
 #     python3 -m pip install --upgrade pip && \
