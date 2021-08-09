@@ -38,6 +38,13 @@ RUN sed -i -e 's+TO_REPLACE_PATH_TO_DARKNET+/var/local/darknet+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_VIDEO_INPUT+file+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_NEURAL_NETWORK+yolov4-tiny+g' config.json;
 
+RUN echo "car" > /var/local/darknet/data/coco.names
+RUN echo "truck" >> /var/local/darknet/data/coco.names
+RUN echo "bus" >> /var/local/darknet/data/coco.names
+
+RUN wget -P /var/local/darknet/opendatacam_videos "http://nl.jeanlouisle.com/downloads/Trim720B.mov"
+RUN sed -i -e 's+demo.mp4+Trim720B.mov+g' config.json;
+
 EXPOSE 8080 8070 8090
 
 COPY launch.sh launch.sh
