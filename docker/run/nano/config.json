@@ -4,7 +4,7 @@
   "VIDEO_INPUT": "yolov4-tiny",
   "NEURAL_NETWORK": "TO_REPLACE_NEURAL_NETWORK",
   "VIDEO_INPUTS_PARAMS": {
-    "file": "demo.mp4",
+    "file": "opendatacam_videos/B.mov",
     "usbcam": "v4l2src device=/dev/video0 ! video/x-raw, framerate=30/1, width=640, height=360 ! videoconvert ! appsink",
     "raspberrycam": "nvarguscamerasrc ! video/x-raw(memory:NVMM),width=1280, height=720, framerate=30/1, format=NV12 ! nvvidconv ! video/x-raw, format=BGRx, width=640, height=360 ! videoconvert ! video/x-raw, format=BGR ! appsink",
     "remote_cam": "YOUR IP CAM STREAM (can be .m3u8, MJPEG ...), anything supported by opencv",
