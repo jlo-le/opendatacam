@@ -5,12 +5,15 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y jq wget
 
 # Start Darknet Install
+ENV CACHE_BREAKER_A 1
 RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/darknet /var/local/darknet
 
 WORKDIR /var/local/darknet
 
 # COPY Makefile
 COPY Makefile Makefile
+
+RUN make
 
 # COPY weights, get them localy in the Dockerfile folder previously as they are slow to download each time
 # Links: https://github.com/AlexeyAB/darknet#pre-trained-models
@@ -23,13 +26,7 @@ RUN mkdir opendatacam_videos && cd opendatacam_videos && wget https://github.com
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get install -y nodejs
 
-RUN wget -P /var/local/darknet/opendatacam_videos "http://nl.jeanlouisle.com/downloads/B.mov"
-RUN sed -i -e 's+demo.mp4+B.mov+g' config.json;
-
-ENV CACHE_BREAKER_A 1
-RUN make
-
-ENV CACHE_BREAKER_B 1
+ENV CACHE_BREAKER_B 2
 RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/opendatacam /var/local/opendatacam
 
 WORKDIR /var/local/opendatacam
@@ -41,6 +38,9 @@ RUN npm run build
 RUN sed -i -e 's+TO_REPLACE_PATH_TO_DARKNET+/var/local/darknet+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_VIDEO_INPUT+file+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_NEURAL_NETWORK+yolov4-tiny+g' config.json;
+
+RUN wget -P /var/local/darknet/opendatacam_videos "http://nl.jeanlouisle.com/downloads/B.mov"
+RUN sed -i -e 's+demo.mp4+B.mov+g' config.json;
 
 EXPOSE 8080 8070 8090
 
