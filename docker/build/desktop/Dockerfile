@@ -34,12 +34,21 @@ RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/opendatacam
 WORKDIR /var/local/opendatacam
 
 RUN npm install
+
+RUN git pull
 RUN npm run build
+
+# UPDATES
+WORKDIR /var/local/darknet
+RUN git pull && make
 
 # Set default settings for Desktop run
 RUN sed -i -e 's+TO_REPLACE_PATH_TO_DARKNET+/var/local/darknet+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_VIDEO_INPUT+file+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_NEURAL_NETWORK+yolov4+g' config.json;
+
+
+RUN git pull npm run build
 
 EXPOSE 8080 8070 8090
 
