@@ -44,6 +44,8 @@ RUN npm run build
 WORKDIR /var/local/darknet
 RUN git pull && make
 
+WORKDIR /var/local/opendatacam
+
 # Set default settings for Desktop run
 RUN sed -i -e 's+TO_REPLACE_PATH_TO_DARKNET+/var/local/darknet+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_VIDEO_INPUT+file+g' config.json;
