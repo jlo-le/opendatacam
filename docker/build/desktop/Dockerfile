@@ -37,7 +37,7 @@ WORKDIR /var/local/opendatacam
 
 RUN npm install
 
-RUN git pull && make
+RUN git pull
 RUN npm run build
 
 # UPDATES
