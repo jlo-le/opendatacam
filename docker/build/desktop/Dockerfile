@@ -51,6 +51,9 @@ RUN sed -i -e 's+TO_REPLACE_PATH_TO_DARKNET+/var/local/darknet+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_VIDEO_INPUT+file+g' config.json;
 RUN sed -i -e 's+TO_REPLACE_NEURAL_NETWORK+yolov4+g' config.json;
 
+RUN wget -P /var/local/darknet/opendatacam_videos "http://nl.jeanlouisle.com/downloads/A.mov"
+RUN sed -i -e 's+demo.mp4+A.mov+g' config.json;
+
 EXPOSE 8080 8070 8090
 
 COPY launch.sh launch.sh

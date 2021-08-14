@@ -570,7 +570,7 @@ module.exports = {
       })}\n\n`);
     } else {
       // Sending update to the client but it is not open
-      console.log('Sending update to the client but the SSE connexion is not open');
+      // console.log('Sending update to the client but the SSE connexion is not open');
     }
   },
 
