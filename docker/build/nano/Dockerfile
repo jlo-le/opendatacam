@@ -32,6 +32,14 @@ RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/opendatacam
 WORKDIR /var/local/opendatacam
 
 RUN npm install
+
+# UPDATES
+ENV CB=1
+WORKDIR /var/local/darknet
+RUN git pull && make
+
+WORKDIR /var/local/opendatacam
+RUN git pull
 RUN npm run build
 
 # Set default settings for Desktop run

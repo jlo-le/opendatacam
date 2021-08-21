@@ -37,14 +37,15 @@ WORKDIR /var/local/opendatacam
 
 RUN npm install
 
-RUN git pull
-RUN npm run build
 
 # UPDATES
+ENV CB=1
 WORKDIR /var/local/darknet
 RUN git pull && make
 
 WORKDIR /var/local/opendatacam
+RUN git pull
+RUN npm run build
 
 # Set default settings for Desktop run
 RUN sed -i -e 's+TO_REPLACE_PATH_TO_DARKNET+/var/local/darknet+g' config.json;
