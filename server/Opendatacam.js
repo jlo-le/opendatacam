@@ -74,6 +74,7 @@ pyshell.on('message', function (message) {
     DBManager.updateColor(
       python_response.recordingId, python_response.frame_id, python_response.key, python_response.color
     )
+    console.log(message)
 });
 
 module.exports = {

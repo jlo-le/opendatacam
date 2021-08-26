@@ -40,7 +40,7 @@ RUN npm install
 
 
 # UPDATES
-ENV CB=1
+ENV CB=2
 WORKDIR /var/local/darknet
 RUN git pull && make
 
