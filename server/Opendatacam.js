@@ -11,8 +11,8 @@ const DBManager = require('./db/DBManager');
 const Logger = require('./utils/Logger');
 const configHelper = require('./utils/configHelper');
 const { exec } = require('child_process');
-
 const getURLData = require('./utils/urlHelper').getURLData;
+const {PythonShell} = require("python-shell");
 
 // YOLO process max retries
 const HTTP_REQUEST_LISTEN_TO_YOLO_RETRY_DELAY_MS = 30;
@@ -59,8 +59,22 @@ const initialState = {
 let Opendatacam = cloneDeep(initialState);
 
 let max_confidence_for_coloring = {};
-let process_within_n_frames = 15; // this should be less than number_of_frames_to_save from darknet (not sure what's a safe margin)
+let process_within_n_frames = 10; // this should be less than number_of_frames_to_save from darknet (not sure what's a safe margin)
 let one_frame_per = 9;            // should be same as darknet value
+
+let pyshell = new PythonShell('script.py');
+
+pyshell.on('stderr', function (stderr) {
+  console.log(stderr)
+});
+
+pyshell.on('message', function (message) {
+    // Update the database, give a color to the car.
+    let python_response = JSON.parse(message)
+    DBManager.updateColor(
+      python_response.recordingId, python_response.frame_id, python_response.key, python_response.color
+    )
+});
 
 module.exports = {
 
@@ -370,6 +384,12 @@ module.exports = {
     if (frameId % one_frame_per != 0) return;
 
     trackerDataForThisFrame.map((tracker_data) => {
+      if (max_confidence_for_coloring.hasOwnProperty(tracker_data.id)) {
+        var frame_counter = max_confidence_for_coloring[tracker_data.id].frame_counter + 1;
+      } else {
+        var frame_counter = 1;
+      }
+
       // add if not existing / update if confidence higher
       if (!max_confidence_for_coloring.hasOwnProperty(tracker_data.id) || tracker_data.confidence > max_confidence_for_coloring[tracker_data.id].confidence) {
         max_confidence_for_coloring[tracker_data.id] = {
@@ -380,7 +400,8 @@ module.exports = {
           'w': tracker_data.w,
           'h': tracker_data.h
         }
-      }
+      } 
+      max_confidence_for_coloring[tracker_data.id].frame_counter = frame_counter;
     });
 
     Object.entries(max_confidence_for_coloring).forEach((entry) => {
@@ -392,18 +413,19 @@ module.exports = {
         return;
       }
 
-      if (!value.hasOwnProperty('color') && frameId >= (value.frame_id + (process_within_n_frames * one_frame_per))) {
-        exec(`python3 color.py -x ${value.x} -y ${value.y} -w ${value.w} -h ${value.h} -f ${value.frame_id}`, function (err, stdout, stderr) {
-          max_confidence_for_coloring[key].color = 'set'
-          if (Opendatacam.recordingStatus.recordingId)
-            DBManager.updateColor(
-              Opendatacam.recordingStatus.recordingId, value.frame_id, parseInt(key), stdout.trim()
-            ).then(() => {
-              // console.log('success');
-            }, (error) => {
-              console.log(error);
-            });
-        });
+      if (!value.hasOwnProperty('color') && frameId >= (value.frame_id + (process_within_n_frames * one_frame_per)) && value.frame_counter > 3 ) {
+        let python_message = {
+          'recordingId': Opendatacam.recordingStatus.recordingId,
+          'frame_id': value.frame_id,
+          'key': parseInt(key),
+          'x': value.x,
+          'y': value.y,
+          'w': value.w,
+          'h': value.h
+        }
+
+        pyshell.send(JSON.stringify(python_message));
+        max_confidence_for_coloring[key].color = 'set'
       }
     });
   },
