@@ -413,7 +413,7 @@ module.exports = {
         return;
       }
 
-      if (!value.hasOwnProperty('color') && frameId >= (value.frame_id + (process_within_n_frames * one_frame_per)) && value.frame_counter > 3 ) {
+      if (!value.hasOwnProperty('color') && frameId >= (value.frame_id + (process_within_n_frames * one_frame_per)) && value.frame_counter > 2 ) {
         let python_message = {
           'recordingId': Opendatacam.recordingStatus.recordingId,
           'frame_id': value.frame_id,
