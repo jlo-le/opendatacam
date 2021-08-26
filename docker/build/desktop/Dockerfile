@@ -35,6 +35,7 @@ RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/opendatacam
 
 WORKDIR /var/local/opendatacam
 
+ENV CBNPM=1
 RUN npm install
 
 
