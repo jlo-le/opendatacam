@@ -26,12 +26,12 @@ RUN mkdir opendatacam_videos && cd opendatacam_videos && wget https://github.com
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && \
     apt-get install -y nodejs
 
-ENV CACHE_BREAKER_B 2
+ENV CACHE_BREAKER_B 3
 RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/opendatacam /var/local/opendatacam
 
 WORKDIR /var/local/opendatacam
 
-ENV CBNPM=1
+
 RUN npm install
 
 # UPDATES

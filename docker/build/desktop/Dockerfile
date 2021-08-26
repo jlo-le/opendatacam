@@ -31,11 +31,11 @@ RUN apt-get install -y python3-venv python3-pip
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install opencv-python==4.3.0.38
 
+ENV CACHE_BREAKER_B 2
 RUN git clone --depth 1 -b traffic-project https://github.com/jlo-le/opendatacam /var/local/opendatacam
 
 WORKDIR /var/local/opendatacam
 
-ENV CBNPM=1
 RUN npm install
 
 
