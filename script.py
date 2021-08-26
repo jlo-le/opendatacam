@@ -15,6 +15,12 @@ def main():
 
         x = int(x - (w / 2))
         y = int(y - (h / 2))
+
+        x = int(x + (w / 10))
+        y = int(y * 85 / 100)
+        w = int(w * 8 / 10)
+        h = int(x - (w / 2))
+        
         try:
             image = cv.imread("../darknet/saved_frames/image_%08d.jpg" % frame_id)
             crop = image[y:y+h, x:x+w]
