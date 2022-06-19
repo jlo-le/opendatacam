@@ -4,7 +4,7 @@
 set -e
 
 # Each OpenDataCam release should set the correct version here and tag appropriatly on github
-VERSION=v3.0.2
+VERSION=vereid
 # PLATFORM in ["nano","xavier","tx2","nvidiadocker"]
 PLATFORM=undefined
 VIDEO_INPUT=undefined
@@ -64,7 +64,7 @@ function docker_compose_setup() {
   command -v docker-compose >/dev/null 2>&1 || { echo >&2 "OpenDataCam requires docker-compose, please install and retry"; }
 
   # Get the docker compose file
-  wget -N https://raw.githubusercontent.com/opendatacam/opendatacam/$VERSION/docker/run/$PLATFORM/docker-compose.yml
+  wget -N https://raw.githubusercontent.com/jlo-le/opendatacam/$VERSION/docker/run/$PLATFORM/docker-compose.yml
 
   echo "Download, install and run opendatacam docker container"
   sudo docker-compose up -d
@@ -75,8 +75,8 @@ function k8s_setup() {
 
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "OpenDataCam requires Kubernetes, please install and retry.\nFor a Kubernetes for embedded go to https://k3s.io/"; }
 
-  wget -N https://raw.githubusercontent.com/opendatacam/opendatacam/master/docker/run/$PLATFORM/kubernetes/0001-mongodb-deployment.yaml -P opendatacam
-  wget -N https://raw.githubusercontent.com/opendatacam/opendatacam/master/docker/run/$PLATFORM/kubernetes/0002-opendatacam-deployment.yaml -P opendatacam
+  wget -N https://raw.githubusercontent.com/jlo-le/opendatacam/master/docker/run/$PLATFORM/kubernetes/0001-mongodb-deployment.yaml -P opendatacam
+  wget -N https://raw.githubusercontent.com/jlo-le/opendatacam/master/docker/run/$PLATFORM/kubernetes/0002-opendatacam-deployment.yaml -P opendatacam
 
   kubectl create configmap opendatacam --from-file=config.json --dry-run -o yaml | kubectl apply -f -
   kubectl apply -f opendatacam
@@ -137,7 +137,7 @@ echo "Installing OpenDataCam $VERSION for platform: $2 ..."
 if [ ! -f ./config.json ]; then
     # Get the config file
     echo "Download config file ..."
-    wget -N https://raw.githubusercontent.com/opendatacam/opendatacam/$VERSION/config.json
+    wget -N https://raw.githubusercontent.com/jlo-le/opendatacam/$VERSION/config.json
 
     # Replace VIDEO_INPUT and NEURAL_NETWORK with default config for this platform
     VIDEO_INPUT=${DEFAUT_VIDEO_INPUT_OPTIONS[$INDEX]}

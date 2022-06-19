@@ -1,9 +1,9 @@
 version: "2.3"
 services:
   opendatacam:
-    restart: always
+    restart: "no"
     runtime: nvidia
-    image: opendatacam/opendatacam:v3.0.2-desktop
+    image: trafficproject/opendatacam:desktop
     privileged: true
     volumes:
       - './config.json:/var/local/opendatacam/config.json'

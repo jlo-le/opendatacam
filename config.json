@@ -20,7 +20,7 @@
     "minAngleWithCountingLineThreshold": 5,
     "computeTrajectoryBasedOnNbOfPastFrame": 5
   },
-  "VALID_CLASSES": ["*"],
+  "VALID_CLASSES": [ "car", "bus", "truck" ],
   "DISPLAY_CLASSES": [
     { "class": "bicycle", "hexcode": "1F6B2"},
     { "class": "person", "hexcode": "1F6B6"},
